@@ -34,6 +34,8 @@ class PluginExecutionPipelineCreateParams(TypedDict, total=False):
 
     selected_operation: Optional[str]
 
+    session_variables: Optional[str]
+
 
 class Config(TypedDict, total=False):
     anthropic_api_key: Optional[str]

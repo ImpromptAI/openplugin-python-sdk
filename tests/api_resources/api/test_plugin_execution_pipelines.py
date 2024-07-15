@@ -55,6 +55,7 @@ class TestPluginExecutionPipelines:
             output_module_names=["string", "string", "string"],
             run_all_output_modules=True,
             selected_operation="selected_operation",
+            session_variables="session_variables",
         )
         assert_matches_type(object, plugin_execution_pipeline, path=["response"])
 
@@ -129,6 +130,7 @@ class TestAsyncPluginExecutionPipelines:
             output_module_names=["string", "string", "string"],
             run_all_output_modules=True,
             selected_operation="selected_operation",
+            session_variables="session_variables",
         )
         assert_matches_type(object, plugin_execution_pipeline, path=["response"])
 
