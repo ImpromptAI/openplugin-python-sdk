@@ -50,6 +50,7 @@ class PluginExecutionPipelinesResource(SyncAPIResource):
         output_module_names: Optional[List[str]] | NotGiven = NOT_GIVEN,
         run_all_output_modules: bool | NotGiven = NOT_GIVEN,
         selected_operation: Optional[str] | NotGiven = NOT_GIVEN,
+        session_variables: Optional[str] | NotGiven = NOT_GIVEN,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
         extra_headers: Headers | None = None,
@@ -87,6 +88,7 @@ class PluginExecutionPipelinesResource(SyncAPIResource):
                     "output_module_names": output_module_names,
                     "run_all_output_modules": run_all_output_modules,
                     "selected_operation": selected_operation,
+                    "session_variables": session_variables,
                 },
                 plugin_execution_pipeline_create_params.PluginExecutionPipelineCreateParams,
             ),
@@ -122,6 +124,7 @@ class AsyncPluginExecutionPipelinesResource(AsyncAPIResource):
         output_module_names: Optional[List[str]] | NotGiven = NOT_GIVEN,
         run_all_output_modules: bool | NotGiven = NOT_GIVEN,
         selected_operation: Optional[str] | NotGiven = NOT_GIVEN,
+        session_variables: Optional[str] | NotGiven = NOT_GIVEN,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
         extra_headers: Headers | None = None,
@@ -159,6 +162,7 @@ class AsyncPluginExecutionPipelinesResource(AsyncAPIResource):
                     "output_module_names": output_module_names,
                     "run_all_output_modules": run_all_output_modules,
                     "selected_operation": selected_operation,
+                    "session_variables": session_variables,
                 },
                 plugin_execution_pipeline_create_params.PluginExecutionPipelineCreateParams,
             ),

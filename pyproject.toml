@@ -1,11 +1,11 @@
 [project]
 name = "openplugin-sdk"
-version = "0.1.0-alpha.1"
+version = "0.1.0-alpha.2"
 description = "The official Python library for the openplugin API"
 dynamic = ["readme"]
 license = "Apache-2.0"
 authors = [
-{ name = "Openplugin", email = "dev-feedback@openplugin.com" },
+{ name = "Openplugin", email = "shrikant@imprompt.ai" },
 ]
 dependencies = [
     "httpx>=0.23.0, <1",
