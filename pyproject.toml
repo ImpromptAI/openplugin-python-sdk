@@ -39,8 +39,8 @@ classifiers = [
 
 
 [project.urls]
-Homepage = "https://github.com/stainless-sdks/openplugin-python"
-Repository = "https://github.com/stainless-sdks/openplugin-python"
+Homepage = "https://github.com/ImpromptAI/openplugin-python-sdk"
+Repository = "https://github.com/ImpromptAI/openplugin-python-sdk"
 
 
 
@@ -124,7 +124,7 @@ path = "README.md"
 [[tool.hatch.metadata.hooks.fancy-pypi-readme.substitutions]]
 # replace relative links with absolute links
 pattern = '\[(.+?)\]\(((?!https?://)\S+?)\)'
-replacement = '[\1](https://github.com/stainless-sdks/openplugin-python/tree/main/\g<2>)'
+replacement = '[\1](https://github.com/ImpromptAI/openplugin-python-sdk/tree/main/\g<2>)'
 
 [tool.black]
 line-length = 120
