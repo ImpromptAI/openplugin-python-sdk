@@ -20,7 +20,7 @@ or products provided by Openplugin please follow the respective company's securi
 
 ### Openplugin Terms and Policies
 
-Please contact dev-feedback@openplugin.com for any questions or concerns regarding security of our services.
+Please contact shrikant@imprompt.ai for any questions or concerns regarding security of our services.
 
 ---
 
