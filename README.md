@@ -28,7 +28,7 @@ from openplugin import Openplugin
 
 client = Openplugin()
 
-info_retrieve_response = client.api.info.retrieve()
+info_retrieve_response = client.info.retrieve()
 ```
 
 While you can provide a `x_api_key` keyword argument,
@@ -48,7 +48,7 @@ client = AsyncOpenplugin()
 
 
 async def main() -> None:
-    info_retrieve_response = await client.api.info.retrieve()
+    info_retrieve_response = await client.info.retrieve()
 
 
 asyncio.run(main())
@@ -81,7 +81,7 @@ from openplugin import Openplugin
 client = Openplugin()
 
 try:
-    client.api.info.retrieve()
+    client.info.retrieve()
 except openplugin.APIConnectionError as e:
     print("The server could not be reached")
     print(e.__cause__)  # an underlying Exception, likely raised within httpx.
@@ -124,7 +124,7 @@ client = Openplugin(
 )
 
 # Or, configure per-request:
-client.with_options(max_retries=5).api.info.retrieve()
+client.with_options(max_retries=5).info.retrieve()
 ```
 
 ### Timeouts
@@ -147,7 +147,7 @@ client = Openplugin(
 )
 
 # Override per-request:
-client.with_options(timeout=5.0).api.info.retrieve()
+client.with_options(timeout=5.0).info.retrieve()
 ```
 
 On timeout, an `APITimeoutError` is thrown.
@@ -186,10 +186,10 @@ The "raw" Response object can be accessed by prefixing `.with_raw_response.` to 
 from openplugin import Openplugin
 
 client = Openplugin()
-response = client.api.info.with_raw_response.retrieve()
+response = client.info.with_raw_response.retrieve()
 print(response.headers.get('X-My-Header'))
 
-info = response.parse()  # get the object that `api.info.retrieve()` would have returned
+info = response.parse()  # get the object that `info.retrieve()` would have returned
 print(info)
 ```
 
@@ -204,7 +204,7 @@ The above interface eagerly reads the full response body when you make the reque
 To stream the response body, use `.with_streaming_response` instead, which requires a context manager and only reads the response body once you call `.read()`, `.text()`, `.json()`, `.iter_bytes()`, `.iter_text()`, `.iter_lines()` or `.parse()`. In the async client, these are async methods.
 
 ```python
-with client.api.info.with_streaming_response.retrieve() as response:
+with client.info.with_streaming_response.retrieve() as response:
     print(response.headers.get("X-My-Header"))
 
     for line in response.iter_lines():
