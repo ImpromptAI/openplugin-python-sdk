@@ -29,6 +29,7 @@ from openplugin import Openplugin
 client = Openplugin()
 
 info_retrieve_response = client.info.retrieve()
+print(info_retrieve_response.end_time)
 ```
 
 While you can provide a `x_api_key` keyword argument,
@@ -49,6 +50,7 @@ client = AsyncOpenplugin()
 
 async def main() -> None:
     info_retrieve_response = await client.info.retrieve()
+    print(info_retrieve_response.end_time)
 
 
 asyncio.run(main())
@@ -190,7 +192,7 @@ response = client.info.with_raw_response.retrieve()
 print(response.headers.get('X-My-Header'))
 
 info = response.parse()  # get the object that `info.retrieve()` would have returned
-print(info)
+print(info.end_time)
 ```
 
 These methods return an [`APIResponse`](https://github.com/ImpromptAI/openplugin-python-sdk/tree/main/src/openplugin/_response.py) object.
