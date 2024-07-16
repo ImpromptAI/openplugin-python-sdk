@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.1.0-alpha.6 (2024-07-16)
+
+Full Changelog: [v0.1.0-alpha.5...v0.1.0-alpha.6](https://github.com/ImpromptAI/openplugin-python-sdk/compare/v0.1.0-alpha.5...v0.1.0-alpha.6)
+
+### Features
+
+* **api:** OpenAPI spec update via Stainless API ([#18](https://github.com/ImpromptAI/openplugin-python-sdk/issues/18)) ([347e048](https://github.com/ImpromptAI/openplugin-python-sdk/commit/347e048e05b5a2be3ecebf395450a0bf2c08be15))
+
 ## 0.1.0-alpha.5 (2024-07-16)
 
 Full Changelog: [v0.1.0-alpha.4...v0.1.0-alpha.5](https://github.com/ImpromptAI/openplugin-python-sdk/compare/v0.1.0-alpha.4...v0.1.0-alpha.5)
