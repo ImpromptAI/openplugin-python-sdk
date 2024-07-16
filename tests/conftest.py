@@ -26,6 +26,8 @@ def event_loop() -> Iterator[asyncio.AbstractEventLoop]:
 
 base_url = os.environ.get("TEST_API_BASE_URL", "http://127.0.0.1:4010")
 
+x_api_key = "My X API Key"
+
 
 @pytest.fixture(scope="session")
 def client(request: FixtureRequest) -> Iterator[Openplugin]:
@@ -33,7 +35,7 @@ def client(request: FixtureRequest) -> Iterator[Openplugin]:
     if not isinstance(strict, bool):
         raise TypeError(f"Unexpected fixture parameter type {type(strict)}, expected {bool}")
 
-    with Openplugin(base_url=base_url, _strict_response_validation=strict) as client:
+    with Openplugin(base_url=base_url, x_api_key=x_api_key, _strict_response_validation=strict) as client:
         yield client
 
 
@@ -43,5 +45,5 @@ async def async_client(request: FixtureRequest) -> AsyncIterator[AsyncOpenplugin
     if not isinstance(strict, bool):
         raise TypeError(f"Unexpected fixture parameter type {type(strict)}, expected {bool}")
 
-    async with AsyncOpenplugin(base_url=base_url, _strict_response_validation=strict) as client:
+    async with AsyncOpenplugin(base_url=base_url, x_api_key=x_api_key, _strict_response_validation=strict) as client:
         yield client
