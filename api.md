@@ -1,51 +1,5 @@
 # API
 
-Types:
-
-```python
-from openplugin.types import APIListResponse
-```
-
-Methods:
-
-- <code title="get /api/">client.api.<a href="./src/openplugin/resources/api/api.py">list</a>() -> <a href="./src/openplugin/types/api_list_response.py">object</a></code>
-
-## PluginSelectors
-
-Types:
-
-```python
-from openplugin.types.api import PluginSelectorCreateResponse
-```
-
-Methods:
-
-- <code title="post /api/plugin-selector">client.api.plugin_selectors.<a href="./src/openplugin/resources/api/plugin_selectors.py">create</a>(\*\*<a href="src/openplugin/types/api/plugin_selector_create_params.py">params</a>) -> <a href="./src/openplugin/types/api/plugin_selector_create_response.py">object</a></code>
-
-## OperationSignatureBuilders
-
-Types:
-
-```python
-from openplugin.types.api import OperationSignatureBuilderCreateResponse
-```
-
-Methods:
-
-- <code title="post /api/operation-signature-builder">client.api.operation_signature_builders.<a href="./src/openplugin/resources/api/operation_signature_builders.py">create</a>(\*\*<a href="src/openplugin/types/api/operation_signature_builder_create_params.py">params</a>) -> <a href="./src/openplugin/types/api/operation_signature_builder_create_response.py">object</a></code>
-
-## OperationExecutions
-
-Types:
-
-```python
-from openplugin.types.api import OperationExecutionCreateResponse
-```
-
-Methods:
-
-- <code title="post /api/operation-execution">client.api.operation_executions.<a href="./src/openplugin/resources/api/operation_executions.py">create</a>(\*\*<a href="src/openplugin/types/api/operation_execution_create_params.py">params</a>) -> <a href="./src/openplugin/types/api/operation_execution_create_response.py">object</a></code>
-
 ## Info
 
 Types:
@@ -118,38 +72,38 @@ Methods:
 
 - <code title="post /api/run-function-provider">client.api.run_function_providers.<a href="./src/openplugin/resources/api/run_function_providers.py">create</a>(\*\*<a href="src/openplugin/types/api/run_function_provider_create_params.py">params</a>) -> <a href="./src/openplugin/types/api/run_function_provider_create_response.py">object</a></code>
 
-# PluginValidators
+## PluginValidators
 
 Types:
 
 ```python
-from openplugin.types import PluginValidatorCreateResponse
+from openplugin.types.api import PluginValidatorCreateResponse
 ```
 
 Methods:
 
-- <code title="post /api/plugin-validator">client.plugin_validators.<a href="./src/openplugin/resources/plugin_validators.py">create</a>(\*\*<a href="src/openplugin/types/plugin_validator_create_params.py">params</a>) -> <a href="./src/openplugin/types/plugin_validator_create_response.py">object</a></code>
+- <code title="post /api/plugin-validator">client.api.plugin_validators.<a href="./src/openplugin/resources/api/plugin_validators.py">create</a>(\*\*<a href="src/openplugin/types/api/plugin_validator_create_params.py">params</a>) -> <a href="./src/openplugin/types/api/plugin_validator_create_response.py">object</a></code>
 
-# OpenAPIParsers
+## OpenAPIParsers
 
 Types:
 
 ```python
-from openplugin.types import OpenAPIParserRetrieveResponse
+from openplugin.types.api import OpenAPIParserRetrieveResponse
 ```
 
 Methods:
 
-- <code title="get /api/openapi-parser">client.openapi_parsers.<a href="./src/openplugin/resources/openapi_parsers.py">retrieve</a>() -> <a href="./src/openplugin/types/openapi_parser_retrieve_response.py">object</a></code>
+- <code title="get /api/openapi-parser">client.api.openapi_parsers.<a href="./src/openplugin/resources/api/openapi_parsers.py">retrieve</a>() -> <a href="./src/openplugin/types/api/openapi_parser_retrieve_response.py">object</a></code>
 
-# OpenAPIParamParsers
+## OpenAPIParamParsers
 
 Types:
 
 ```python
-from openplugin.types import OpenAPIParamParserRetrieveResponse
+from openplugin.types.api import OpenAPIParamParserRetrieveResponse
 ```
 
 Methods:
 
-- <code title="get /api/openapi-param-parser">client.openapi_param_parsers.<a href="./src/openplugin/resources/openapi_param_parsers.py">retrieve</a>(\*\*<a href="src/openplugin/types/openapi_param_parser_retrieve_params.py">params</a>) -> <a href="./src/openplugin/types/openapi_param_parser_retrieve_response.py">object</a></code>
+- <code title="get /api/openapi-param-parser">client.api.openapi_param_parsers.<a href="./src/openplugin/resources/api/openapi_param_parsers.py">retrieve</a>(\*\*<a href="src/openplugin/types/api/openapi_param_parser_retrieve_params.py">params</a>) -> <a href="./src/openplugin/types/api/openapi_param_parser_retrieve_response.py">object</a></code>
