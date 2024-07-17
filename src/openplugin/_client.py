@@ -25,7 +25,7 @@ from ._utils import (
 )
 from ._version import __version__
 from ._streaming import Stream as Stream, AsyncStream as AsyncStream
-from ._exceptions import APIStatusError
+from ._exceptions import APIStatusError, OpenpluginError
 from ._base_client import (
     DEFAULT_MAX_RETRIES,
     SyncAPIClient,
@@ -46,18 +46,24 @@ __all__ = [
 
 
 class Openplugin(SyncAPIClient):
-    api: resources.APIResource
+    info: resources.InfoResource
+    plugin_execution_pipelines: resources.PluginExecutionPipelinesResource
+    processors: resources.ProcessorsResource
+    function_providers: resources.FunctionProvidersResource
+    function_provider_requests: resources.FunctionProviderRequestsResource
+    run_function_providers: resources.RunFunctionProvidersResource
     plugin_validators: resources.PluginValidatorsResource
-    openapi_parsers: resources.OpenAPIParsersResource
     openapi_param_parsers: resources.OpenAPIParamParsersResource
     with_raw_response: OpenpluginWithRawResponse
     with_streaming_response: OpenpluginWithStreamedResponse
 
     # client options
+    x_api_key: str
 
     def __init__(
         self,
         *,
+        x_api_key: str | None = None,
         base_url: str | httpx.URL | None = None,
         timeout: Union[float, Timeout, None, NotGiven] = NOT_GIVEN,
         max_retries: int = DEFAULT_MAX_RETRIES,
@@ -77,11 +83,22 @@ class Openplugin(SyncAPIClient):
         # part of our public interface in the future.
         _strict_response_validation: bool = False,
     ) -> None:
-        """Construct a new synchronous openplugin client instance."""
+        """Construct a new synchronous openplugin client instance.
+
+        This automatically infers the `x_api_key` argument from the `OPENPLUGIN_API_KEY` environment variable if it is not provided.
+        """
+        if x_api_key is None:
+            x_api_key = os.environ.get("OPENPLUGIN_API_KEY")
+        if x_api_key is None:
+            raise OpenpluginError(
+                "The x_api_key client option must be set either by passing x_api_key to the client or by setting the OPENPLUGIN_API_KEY environment variable"
+            )
+        self.x_api_key = x_api_key
+
         if base_url is None:
             base_url = os.environ.get("OPENPLUGIN_BASE_URL")
         if base_url is None:
-            base_url = f"https://localhost:8080/test-api"
+            base_url = f"http://localhost:8003"
 
         super().__init__(
             version=__version__,
@@ -94,9 +111,13 @@ class Openplugin(SyncAPIClient):
             _strict_response_validation=_strict_response_validation,
         )
 
-        self.api = resources.APIResource(self)
+        self.info = resources.InfoResource(self)
+        self.plugin_execution_pipelines = resources.PluginExecutionPipelinesResource(self)
+        self.processors = resources.ProcessorsResource(self)
+        self.function_providers = resources.FunctionProvidersResource(self)
+        self.function_provider_requests = resources.FunctionProviderRequestsResource(self)
+        self.run_function_providers = resources.RunFunctionProvidersResource(self)
         self.plugin_validators = resources.PluginValidatorsResource(self)
-        self.openapi_parsers = resources.OpenAPIParsersResource(self)
         self.openapi_param_parsers = resources.OpenAPIParamParsersResource(self)
         self.with_raw_response = OpenpluginWithRawResponse(self)
         self.with_streaming_response = OpenpluginWithStreamedResponse(self)
@@ -105,6 +126,12 @@ class Openplugin(SyncAPIClient):
     @override
     def qs(self) -> Querystring:
         return Querystring(array_format="comma")
+
+    @property
+    @override
+    def auth_headers(self) -> dict[str, str]:
+        x_api_key = self.x_api_key
+        return {"x-api-key": x_api_key}
 
     @property
     @override
@@ -118,6 +145,7 @@ class Openplugin(SyncAPIClient):
     def copy(
         self,
         *,
+        x_api_key: str | None = None,
         base_url: str | httpx.URL | None = None,
         timeout: float | Timeout | None | NotGiven = NOT_GIVEN,
         http_client: httpx.Client | None = None,
@@ -151,6 +179,7 @@ class Openplugin(SyncAPIClient):
 
         http_client = http_client or self._client
         return self.__class__(
+            x_api_key=x_api_key or self.x_api_key,
             base_url=base_url or self.base_url,
             timeout=self.timeout if isinstance(timeout, NotGiven) else timeout,
             http_client=http_client,
@@ -199,18 +228,24 @@ class Openplugin(SyncAPIClient):
 
 
 class AsyncOpenplugin(AsyncAPIClient):
-    api: resources.AsyncAPIResource
+    info: resources.AsyncInfoResource
+    plugin_execution_pipelines: resources.AsyncPluginExecutionPipelinesResource
+    processors: resources.AsyncProcessorsResource
+    function_providers: resources.AsyncFunctionProvidersResource
+    function_provider_requests: resources.AsyncFunctionProviderRequestsResource
+    run_function_providers: resources.AsyncRunFunctionProvidersResource
     plugin_validators: resources.AsyncPluginValidatorsResource
-    openapi_parsers: resources.AsyncOpenAPIParsersResource
     openapi_param_parsers: resources.AsyncOpenAPIParamParsersResource
     with_raw_response: AsyncOpenpluginWithRawResponse
     with_streaming_response: AsyncOpenpluginWithStreamedResponse
 
     # client options
+    x_api_key: str
 
     def __init__(
         self,
         *,
+        x_api_key: str | None = None,
         base_url: str | httpx.URL | None = None,
         timeout: Union[float, Timeout, None, NotGiven] = NOT_GIVEN,
         max_retries: int = DEFAULT_MAX_RETRIES,
@@ -230,11 +265,22 @@ class AsyncOpenplugin(AsyncAPIClient):
         # part of our public interface in the future.
         _strict_response_validation: bool = False,
     ) -> None:
-        """Construct a new async openplugin client instance."""
+        """Construct a new async openplugin client instance.
+
+        This automatically infers the `x_api_key` argument from the `OPENPLUGIN_API_KEY` environment variable if it is not provided.
+        """
+        if x_api_key is None:
+            x_api_key = os.environ.get("OPENPLUGIN_API_KEY")
+        if x_api_key is None:
+            raise OpenpluginError(
+                "The x_api_key client option must be set either by passing x_api_key to the client or by setting the OPENPLUGIN_API_KEY environment variable"
+            )
+        self.x_api_key = x_api_key
+
         if base_url is None:
             base_url = os.environ.get("OPENPLUGIN_BASE_URL")
         if base_url is None:
-            base_url = f"https://localhost:8080/test-api"
+            base_url = f"http://localhost:8003"
 
         super().__init__(
             version=__version__,
@@ -247,9 +293,13 @@ class AsyncOpenplugin(AsyncAPIClient):
             _strict_response_validation=_strict_response_validation,
         )
 
-        self.api = resources.AsyncAPIResource(self)
+        self.info = resources.AsyncInfoResource(self)
+        self.plugin_execution_pipelines = resources.AsyncPluginExecutionPipelinesResource(self)
+        self.processors = resources.AsyncProcessorsResource(self)
+        self.function_providers = resources.AsyncFunctionProvidersResource(self)
+        self.function_provider_requests = resources.AsyncFunctionProviderRequestsResource(self)
+        self.run_function_providers = resources.AsyncRunFunctionProvidersResource(self)
         self.plugin_validators = resources.AsyncPluginValidatorsResource(self)
-        self.openapi_parsers = resources.AsyncOpenAPIParsersResource(self)
         self.openapi_param_parsers = resources.AsyncOpenAPIParamParsersResource(self)
         self.with_raw_response = AsyncOpenpluginWithRawResponse(self)
         self.with_streaming_response = AsyncOpenpluginWithStreamedResponse(self)
@@ -258,6 +308,12 @@ class AsyncOpenplugin(AsyncAPIClient):
     @override
     def qs(self) -> Querystring:
         return Querystring(array_format="comma")
+
+    @property
+    @override
+    def auth_headers(self) -> dict[str, str]:
+        x_api_key = self.x_api_key
+        return {"x-api-key": x_api_key}
 
     @property
     @override
@@ -271,6 +327,7 @@ class AsyncOpenplugin(AsyncAPIClient):
     def copy(
         self,
         *,
+        x_api_key: str | None = None,
         base_url: str | httpx.URL | None = None,
         timeout: float | Timeout | None | NotGiven = NOT_GIVEN,
         http_client: httpx.AsyncClient | None = None,
@@ -304,6 +361,7 @@ class AsyncOpenplugin(AsyncAPIClient):
 
         http_client = http_client or self._client
         return self.__class__(
+            x_api_key=x_api_key or self.x_api_key,
             base_url=base_url or self.base_url,
             timeout=self.timeout if isinstance(timeout, NotGiven) else timeout,
             http_client=http_client,
@@ -353,17 +411,37 @@ class AsyncOpenplugin(AsyncAPIClient):
 
 class OpenpluginWithRawResponse:
     def __init__(self, client: Openplugin) -> None:
-        self.api = resources.APIResourceWithRawResponse(client.api)
+        self.info = resources.InfoResourceWithRawResponse(client.info)
+        self.plugin_execution_pipelines = resources.PluginExecutionPipelinesResourceWithRawResponse(
+            client.plugin_execution_pipelines
+        )
+        self.processors = resources.ProcessorsResourceWithRawResponse(client.processors)
+        self.function_providers = resources.FunctionProvidersResourceWithRawResponse(client.function_providers)
+        self.function_provider_requests = resources.FunctionProviderRequestsResourceWithRawResponse(
+            client.function_provider_requests
+        )
+        self.run_function_providers = resources.RunFunctionProvidersResourceWithRawResponse(
+            client.run_function_providers
+        )
         self.plugin_validators = resources.PluginValidatorsResourceWithRawResponse(client.plugin_validators)
-        self.openapi_parsers = resources.OpenAPIParsersResourceWithRawResponse(client.openapi_parsers)
         self.openapi_param_parsers = resources.OpenAPIParamParsersResourceWithRawResponse(client.openapi_param_parsers)
 
 
 class AsyncOpenpluginWithRawResponse:
     def __init__(self, client: AsyncOpenplugin) -> None:
-        self.api = resources.AsyncAPIResourceWithRawResponse(client.api)
+        self.info = resources.AsyncInfoResourceWithRawResponse(client.info)
+        self.plugin_execution_pipelines = resources.AsyncPluginExecutionPipelinesResourceWithRawResponse(
+            client.plugin_execution_pipelines
+        )
+        self.processors = resources.AsyncProcessorsResourceWithRawResponse(client.processors)
+        self.function_providers = resources.AsyncFunctionProvidersResourceWithRawResponse(client.function_providers)
+        self.function_provider_requests = resources.AsyncFunctionProviderRequestsResourceWithRawResponse(
+            client.function_provider_requests
+        )
+        self.run_function_providers = resources.AsyncRunFunctionProvidersResourceWithRawResponse(
+            client.run_function_providers
+        )
         self.plugin_validators = resources.AsyncPluginValidatorsResourceWithRawResponse(client.plugin_validators)
-        self.openapi_parsers = resources.AsyncOpenAPIParsersResourceWithRawResponse(client.openapi_parsers)
         self.openapi_param_parsers = resources.AsyncOpenAPIParamParsersResourceWithRawResponse(
             client.openapi_param_parsers
         )
@@ -371,9 +449,19 @@ class AsyncOpenpluginWithRawResponse:
 
 class OpenpluginWithStreamedResponse:
     def __init__(self, client: Openplugin) -> None:
-        self.api = resources.APIResourceWithStreamingResponse(client.api)
+        self.info = resources.InfoResourceWithStreamingResponse(client.info)
+        self.plugin_execution_pipelines = resources.PluginExecutionPipelinesResourceWithStreamingResponse(
+            client.plugin_execution_pipelines
+        )
+        self.processors = resources.ProcessorsResourceWithStreamingResponse(client.processors)
+        self.function_providers = resources.FunctionProvidersResourceWithStreamingResponse(client.function_providers)
+        self.function_provider_requests = resources.FunctionProviderRequestsResourceWithStreamingResponse(
+            client.function_provider_requests
+        )
+        self.run_function_providers = resources.RunFunctionProvidersResourceWithStreamingResponse(
+            client.run_function_providers
+        )
         self.plugin_validators = resources.PluginValidatorsResourceWithStreamingResponse(client.plugin_validators)
-        self.openapi_parsers = resources.OpenAPIParsersResourceWithStreamingResponse(client.openapi_parsers)
         self.openapi_param_parsers = resources.OpenAPIParamParsersResourceWithStreamingResponse(
             client.openapi_param_parsers
         )
@@ -381,9 +469,21 @@ class OpenpluginWithStreamedResponse:
 
 class AsyncOpenpluginWithStreamedResponse:
     def __init__(self, client: AsyncOpenplugin) -> None:
-        self.api = resources.AsyncAPIResourceWithStreamingResponse(client.api)
+        self.info = resources.AsyncInfoResourceWithStreamingResponse(client.info)
+        self.plugin_execution_pipelines = resources.AsyncPluginExecutionPipelinesResourceWithStreamingResponse(
+            client.plugin_execution_pipelines
+        )
+        self.processors = resources.AsyncProcessorsResourceWithStreamingResponse(client.processors)
+        self.function_providers = resources.AsyncFunctionProvidersResourceWithStreamingResponse(
+            client.function_providers
+        )
+        self.function_provider_requests = resources.AsyncFunctionProviderRequestsResourceWithStreamingResponse(
+            client.function_provider_requests
+        )
+        self.run_function_providers = resources.AsyncRunFunctionProvidersResourceWithStreamingResponse(
+            client.run_function_providers
+        )
         self.plugin_validators = resources.AsyncPluginValidatorsResourceWithStreamingResponse(client.plugin_validators)
-        self.openapi_parsers = resources.AsyncOpenAPIParsersResourceWithStreamingResponse(client.openapi_parsers)
         self.openapi_param_parsers = resources.AsyncOpenAPIParamParsersResourceWithStreamingResponse(
             client.openapi_param_parsers
         )
