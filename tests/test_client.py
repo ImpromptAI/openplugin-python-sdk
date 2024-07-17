@@ -30,6 +30,7 @@ from openplugin._base_client import (
 from .utils import update_env
 
 base_url = os.environ.get("TEST_API_BASE_URL", "http://127.0.0.1:4010")
+x_api_key = "My X API Key"
 
 
 def _get_params(client: BaseClient[Any, Any]) -> dict[str, str]:
@@ -51,7 +52,7 @@ def _get_open_connections(client: Openplugin | AsyncOpenplugin) -> int:
 
 
 class TestOpenplugin:
-    client = Openplugin(base_url=base_url, _strict_response_validation=True)
+    client = Openplugin(base_url=base_url, x_api_key=x_api_key, _strict_response_validation=True)
 
     @pytest.mark.respx(base_url=base_url)
     def test_raw_response(self, respx_mock: MockRouter) -> None:
@@ -77,6 +78,10 @@ class TestOpenplugin:
         copied = self.client.copy()
         assert id(copied) != id(self.client)
 
+        copied = self.client.copy(x_api_key="another My X API Key")
+        assert copied.x_api_key == "another My X API Key"
+        assert self.client.x_api_key == "My X API Key"
+
     def test_copy_default_options(self) -> None:
         # options that have a default are overridden correctly
         copied = self.client.copy(max_retries=7)
@@ -94,7 +99,9 @@ class TestOpenplugin:
         assert isinstance(self.client.timeout, httpx.Timeout)
 
     def test_copy_default_headers(self) -> None:
-        client = Openplugin(base_url=base_url, _strict_response_validation=True, default_headers={"X-Foo": "bar"})
+        client = Openplugin(
+            base_url=base_url, x_api_key=x_api_key, _strict_response_validation=True, default_headers={"X-Foo": "bar"}
+        )
         assert client.default_headers["X-Foo"] == "bar"
 
         # does not override the already given value when not specified
@@ -126,7 +133,9 @@ class TestOpenplugin:
             client.copy(set_default_headers={}, default_headers={"X-Foo": "Bar"})
 
     def test_copy_default_query(self) -> None:
-        client = Openplugin(base_url=base_url, _strict_response_validation=True, default_query={"foo": "bar"})
+        client = Openplugin(
+            base_url=base_url, x_api_key=x_api_key, _strict_response_validation=True, default_query={"foo": "bar"}
+        )
         assert _get_params(client)["foo"] == "bar"
 
         # does not override the already given value when not specified
@@ -249,7 +258,9 @@ class TestOpenplugin:
         assert timeout == httpx.Timeout(100.0)
 
     def test_client_timeout_option(self) -> None:
-        client = Openplugin(base_url=base_url, _strict_response_validation=True, timeout=httpx.Timeout(0))
+        client = Openplugin(
+            base_url=base_url, x_api_key=x_api_key, _strict_response_validation=True, timeout=httpx.Timeout(0)
+        )
 
         request = client._build_request(FinalRequestOptions(method="get", url="/foo"))
         timeout = httpx.Timeout(**request.extensions["timeout"])  # type: ignore
@@ -258,7 +269,9 @@ class TestOpenplugin:
     def test_http_client_timeout_option(self) -> None:
         # custom timeout given to the httpx client should be used
         with httpx.Client(timeout=None) as http_client:
-            client = Openplugin(base_url=base_url, _strict_response_validation=True, http_client=http_client)
+            client = Openplugin(
+                base_url=base_url, x_api_key=x_api_key, _strict_response_validation=True, http_client=http_client
+            )
 
             request = client._build_request(FinalRequestOptions(method="get", url="/foo"))
             timeout = httpx.Timeout(**request.extensions["timeout"])  # type: ignore
@@ -266,7 +279,9 @@ class TestOpenplugin:
 
         # no timeout given to the httpx client should not use the httpx default
         with httpx.Client() as http_client:
-            client = Openplugin(base_url=base_url, _strict_response_validation=True, http_client=http_client)
+            client = Openplugin(
+                base_url=base_url, x_api_key=x_api_key, _strict_response_validation=True, http_client=http_client
+            )
 
             request = client._build_request(FinalRequestOptions(method="get", url="/foo"))
             timeout = httpx.Timeout(**request.extensions["timeout"])  # type: ignore
@@ -274,7 +289,9 @@ class TestOpenplugin:
 
         # explicitly passing the default timeout currently results in it being ignored
         with httpx.Client(timeout=HTTPX_DEFAULT_TIMEOUT) as http_client:
-            client = Openplugin(base_url=base_url, _strict_response_validation=True, http_client=http_client)
+            client = Openplugin(
+                base_url=base_url, x_api_key=x_api_key, _strict_response_validation=True, http_client=http_client
+            )
 
             request = client._build_request(FinalRequestOptions(method="get", url="/foo"))
             timeout = httpx.Timeout(**request.extensions["timeout"])  # type: ignore
@@ -283,16 +300,24 @@ class TestOpenplugin:
     async def test_invalid_http_client(self) -> None:
         with pytest.raises(TypeError, match="Invalid `http_client` arg"):
             async with httpx.AsyncClient() as http_client:
-                Openplugin(base_url=base_url, _strict_response_validation=True, http_client=cast(Any, http_client))
+                Openplugin(
+                    base_url=base_url,
+                    x_api_key=x_api_key,
+                    _strict_response_validation=True,
+                    http_client=cast(Any, http_client),
+                )
 
     def test_default_headers_option(self) -> None:
-        client = Openplugin(base_url=base_url, _strict_response_validation=True, default_headers={"X-Foo": "bar"})
+        client = Openplugin(
+            base_url=base_url, x_api_key=x_api_key, _strict_response_validation=True, default_headers={"X-Foo": "bar"}
+        )
         request = client._build_request(FinalRequestOptions(method="get", url="/foo"))
         assert request.headers.get("x-foo") == "bar"
         assert request.headers.get("x-stainless-lang") == "python"
 
         client2 = Openplugin(
             base_url=base_url,
+            x_api_key=x_api_key,
             _strict_response_validation=True,
             default_headers={
                 "X-Foo": "stainless",
@@ -304,7 +329,12 @@ class TestOpenplugin:
         assert request.headers.get("x-stainless-lang") == "my-overriding-header"
 
     def test_default_query_option(self) -> None:
-        client = Openplugin(base_url=base_url, _strict_response_validation=True, default_query={"query_param": "bar"})
+        client = Openplugin(
+            base_url=base_url,
+            x_api_key=x_api_key,
+            _strict_response_validation=True,
+            default_query={"query_param": "bar"},
+        )
         request = client._build_request(FinalRequestOptions(method="get", url="/foo"))
         url = httpx.URL(request.url)
         assert dict(url.params) == {"query_param": "bar"}
@@ -503,7 +533,9 @@ class TestOpenplugin:
         assert response.foo == 2
 
     def test_base_url_setter(self) -> None:
-        client = Openplugin(base_url="https://example.com/from_init", _strict_response_validation=True)
+        client = Openplugin(
+            base_url="https://example.com/from_init", x_api_key=x_api_key, _strict_response_validation=True
+        )
         assert client.base_url == "https://example.com/from_init/"
 
         client.base_url = "https://example.com/from_setter"  # type: ignore[assignment]
@@ -512,15 +544,18 @@ class TestOpenplugin:
 
     def test_base_url_env(self) -> None:
         with update_env(OPENPLUGIN_BASE_URL="http://localhost:5000/from/env"):
-            client = Openplugin(_strict_response_validation=True)
+            client = Openplugin(x_api_key=x_api_key, _strict_response_validation=True)
             assert client.base_url == "http://localhost:5000/from/env/"
 
     @pytest.mark.parametrize(
         "client",
         [
-            Openplugin(base_url="http://localhost:5000/custom/path/", _strict_response_validation=True),
+            Openplugin(
+                base_url="http://localhost:5000/custom/path/", x_api_key=x_api_key, _strict_response_validation=True
+            ),
             Openplugin(
                 base_url="http://localhost:5000/custom/path/",
+                x_api_key=x_api_key,
                 _strict_response_validation=True,
                 http_client=httpx.Client(),
             ),
@@ -540,9 +575,12 @@ class TestOpenplugin:
     @pytest.mark.parametrize(
         "client",
         [
-            Openplugin(base_url="http://localhost:5000/custom/path/", _strict_response_validation=True),
+            Openplugin(
+                base_url="http://localhost:5000/custom/path/", x_api_key=x_api_key, _strict_response_validation=True
+            ),
             Openplugin(
                 base_url="http://localhost:5000/custom/path/",
+                x_api_key=x_api_key,
                 _strict_response_validation=True,
                 http_client=httpx.Client(),
             ),
@@ -562,9 +600,12 @@ class TestOpenplugin:
     @pytest.mark.parametrize(
         "client",
         [
-            Openplugin(base_url="http://localhost:5000/custom/path/", _strict_response_validation=True),
+            Openplugin(
+                base_url="http://localhost:5000/custom/path/", x_api_key=x_api_key, _strict_response_validation=True
+            ),
             Openplugin(
                 base_url="http://localhost:5000/custom/path/",
+                x_api_key=x_api_key,
                 _strict_response_validation=True,
                 http_client=httpx.Client(),
             ),
@@ -582,7 +623,7 @@ class TestOpenplugin:
         assert request.url == "https://myapi.com/foo"
 
     def test_copied_client_does_not_close_http(self) -> None:
-        client = Openplugin(base_url=base_url, _strict_response_validation=True)
+        client = Openplugin(base_url=base_url, x_api_key=x_api_key, _strict_response_validation=True)
         assert not client.is_closed()
 
         copied = client.copy()
@@ -593,7 +634,7 @@ class TestOpenplugin:
         assert not client.is_closed()
 
     def test_client_context_manager(self) -> None:
-        client = Openplugin(base_url=base_url, _strict_response_validation=True)
+        client = Openplugin(base_url=base_url, x_api_key=x_api_key, _strict_response_validation=True)
         with client as c2:
             assert c2 is client
             assert not c2.is_closed()
@@ -614,7 +655,9 @@ class TestOpenplugin:
 
     def test_client_max_retries_validation(self) -> None:
         with pytest.raises(TypeError, match=r"max_retries cannot be None"):
-            Openplugin(base_url=base_url, _strict_response_validation=True, max_retries=cast(Any, None))
+            Openplugin(
+                base_url=base_url, x_api_key=x_api_key, _strict_response_validation=True, max_retries=cast(Any, None)
+            )
 
     @pytest.mark.respx(base_url=base_url)
     def test_received_text_for_expected_json(self, respx_mock: MockRouter) -> None:
@@ -623,12 +666,12 @@ class TestOpenplugin:
 
         respx_mock.get("/foo").mock(return_value=httpx.Response(200, text="my-custom-format"))
 
-        strict_client = Openplugin(base_url=base_url, _strict_response_validation=True)
+        strict_client = Openplugin(base_url=base_url, x_api_key=x_api_key, _strict_response_validation=True)
 
         with pytest.raises(APIResponseValidationError):
             strict_client.get("/foo", cast_to=Model)
 
-        client = Openplugin(base_url=base_url, _strict_response_validation=False)
+        client = Openplugin(base_url=base_url, x_api_key=x_api_key, _strict_response_validation=False)
 
         response = client.get("/foo", cast_to=Model)
         assert isinstance(response, str)  # type: ignore[unreachable]
@@ -655,7 +698,7 @@ class TestOpenplugin:
     )
     @mock.patch("time.time", mock.MagicMock(return_value=1696004797))
     def test_parse_retry_after_header(self, remaining_retries: int, retry_after: str, timeout: float) -> None:
-        client = Openplugin(base_url=base_url, _strict_response_validation=True)
+        client = Openplugin(base_url=base_url, x_api_key=x_api_key, _strict_response_validation=True)
 
         headers = httpx.Headers({"retry-after": retry_after})
         options = FinalRequestOptions(method="get", url="/foo", max_retries=3)
@@ -665,78 +708,26 @@ class TestOpenplugin:
     @mock.patch("openplugin._base_client.BaseClient._calculate_retry_timeout", _low_retry_timeout)
     @pytest.mark.respx(base_url=base_url)
     def test_retrying_timeout_errors_doesnt_leak(self, respx_mock: MockRouter) -> None:
-        respx_mock.post("/api/plugin-selector").mock(side_effect=httpx.TimeoutException("Test timeout error"))
+        respx_mock.get("/api/info").mock(side_effect=httpx.TimeoutException("Test timeout error"))
 
         with pytest.raises(APITimeoutError):
-            self.client.post(
-                "/api/plugin-selector",
-                body=cast(
-                    object,
-                    dict(
-                        config={},
-                        messages=[
-                            {
-                                "content": "content",
-                                "message_type": "HumanMessage",
-                            },
-                            {
-                                "content": "content",
-                                "message_type": "HumanMessage",
-                            },
-                            {
-                                "content": "content",
-                                "message_type": "HumanMessage",
-                            },
-                        ],
-                        openplugin_manifest_urls=["string", "string", "string"],
-                        pipeline_name="pipeline_name",
-                    ),
-                ),
-                cast_to=httpx.Response,
-                options={"headers": {RAW_RESPONSE_HEADER: "stream"}},
-            )
+            self.client.get("/api/info", cast_to=httpx.Response, options={"headers": {RAW_RESPONSE_HEADER: "stream"}})
 
         assert _get_open_connections(self.client) == 0
 
     @mock.patch("openplugin._base_client.BaseClient._calculate_retry_timeout", _low_retry_timeout)
     @pytest.mark.respx(base_url=base_url)
     def test_retrying_status_errors_doesnt_leak(self, respx_mock: MockRouter) -> None:
-        respx_mock.post("/api/plugin-selector").mock(return_value=httpx.Response(500))
+        respx_mock.get("/api/info").mock(return_value=httpx.Response(500))
 
         with pytest.raises(APIStatusError):
-            self.client.post(
-                "/api/plugin-selector",
-                body=cast(
-                    object,
-                    dict(
-                        config={},
-                        messages=[
-                            {
-                                "content": "content",
-                                "message_type": "HumanMessage",
-                            },
-                            {
-                                "content": "content",
-                                "message_type": "HumanMessage",
-                            },
-                            {
-                                "content": "content",
-                                "message_type": "HumanMessage",
-                            },
-                        ],
-                        openplugin_manifest_urls=["string", "string", "string"],
-                        pipeline_name="pipeline_name",
-                    ),
-                ),
-                cast_to=httpx.Response,
-                options={"headers": {RAW_RESPONSE_HEADER: "stream"}},
-            )
+            self.client.get("/api/info", cast_to=httpx.Response, options={"headers": {RAW_RESPONSE_HEADER: "stream"}})
 
         assert _get_open_connections(self.client) == 0
 
 
 class TestAsyncOpenplugin:
-    client = AsyncOpenplugin(base_url=base_url, _strict_response_validation=True)
+    client = AsyncOpenplugin(base_url=base_url, x_api_key=x_api_key, _strict_response_validation=True)
 
     @pytest.mark.respx(base_url=base_url)
     @pytest.mark.asyncio
@@ -764,6 +755,10 @@ class TestAsyncOpenplugin:
         copied = self.client.copy()
         assert id(copied) != id(self.client)
 
+        copied = self.client.copy(x_api_key="another My X API Key")
+        assert copied.x_api_key == "another My X API Key"
+        assert self.client.x_api_key == "My X API Key"
+
     def test_copy_default_options(self) -> None:
         # options that have a default are overridden correctly
         copied = self.client.copy(max_retries=7)
@@ -781,7 +776,9 @@ class TestAsyncOpenplugin:
         assert isinstance(self.client.timeout, httpx.Timeout)
 
     def test_copy_default_headers(self) -> None:
-        client = AsyncOpenplugin(base_url=base_url, _strict_response_validation=True, default_headers={"X-Foo": "bar"})
+        client = AsyncOpenplugin(
+            base_url=base_url, x_api_key=x_api_key, _strict_response_validation=True, default_headers={"X-Foo": "bar"}
+        )
         assert client.default_headers["X-Foo"] == "bar"
 
         # does not override the already given value when not specified
@@ -813,7 +810,9 @@ class TestAsyncOpenplugin:
             client.copy(set_default_headers={}, default_headers={"X-Foo": "Bar"})
 
     def test_copy_default_query(self) -> None:
-        client = AsyncOpenplugin(base_url=base_url, _strict_response_validation=True, default_query={"foo": "bar"})
+        client = AsyncOpenplugin(
+            base_url=base_url, x_api_key=x_api_key, _strict_response_validation=True, default_query={"foo": "bar"}
+        )
         assert _get_params(client)["foo"] == "bar"
 
         # does not override the already given value when not specified
@@ -936,7 +935,9 @@ class TestAsyncOpenplugin:
         assert timeout == httpx.Timeout(100.0)
 
     async def test_client_timeout_option(self) -> None:
-        client = AsyncOpenplugin(base_url=base_url, _strict_response_validation=True, timeout=httpx.Timeout(0))
+        client = AsyncOpenplugin(
+            base_url=base_url, x_api_key=x_api_key, _strict_response_validation=True, timeout=httpx.Timeout(0)
+        )
 
         request = client._build_request(FinalRequestOptions(method="get", url="/foo"))
         timeout = httpx.Timeout(**request.extensions["timeout"])  # type: ignore
@@ -945,7 +946,9 @@ class TestAsyncOpenplugin:
     async def test_http_client_timeout_option(self) -> None:
         # custom timeout given to the httpx client should be used
         async with httpx.AsyncClient(timeout=None) as http_client:
-            client = AsyncOpenplugin(base_url=base_url, _strict_response_validation=True, http_client=http_client)
+            client = AsyncOpenplugin(
+                base_url=base_url, x_api_key=x_api_key, _strict_response_validation=True, http_client=http_client
+            )
 
             request = client._build_request(FinalRequestOptions(method="get", url="/foo"))
             timeout = httpx.Timeout(**request.extensions["timeout"])  # type: ignore
@@ -953,7 +956,9 @@ class TestAsyncOpenplugin:
 
         # no timeout given to the httpx client should not use the httpx default
         async with httpx.AsyncClient() as http_client:
-            client = AsyncOpenplugin(base_url=base_url, _strict_response_validation=True, http_client=http_client)
+            client = AsyncOpenplugin(
+                base_url=base_url, x_api_key=x_api_key, _strict_response_validation=True, http_client=http_client
+            )
 
             request = client._build_request(FinalRequestOptions(method="get", url="/foo"))
             timeout = httpx.Timeout(**request.extensions["timeout"])  # type: ignore
@@ -961,7 +966,9 @@ class TestAsyncOpenplugin:
 
         # explicitly passing the default timeout currently results in it being ignored
         async with httpx.AsyncClient(timeout=HTTPX_DEFAULT_TIMEOUT) as http_client:
-            client = AsyncOpenplugin(base_url=base_url, _strict_response_validation=True, http_client=http_client)
+            client = AsyncOpenplugin(
+                base_url=base_url, x_api_key=x_api_key, _strict_response_validation=True, http_client=http_client
+            )
 
             request = client._build_request(FinalRequestOptions(method="get", url="/foo"))
             timeout = httpx.Timeout(**request.extensions["timeout"])  # type: ignore
@@ -970,16 +977,24 @@ class TestAsyncOpenplugin:
     def test_invalid_http_client(self) -> None:
         with pytest.raises(TypeError, match="Invalid `http_client` arg"):
             with httpx.Client() as http_client:
-                AsyncOpenplugin(base_url=base_url, _strict_response_validation=True, http_client=cast(Any, http_client))
+                AsyncOpenplugin(
+                    base_url=base_url,
+                    x_api_key=x_api_key,
+                    _strict_response_validation=True,
+                    http_client=cast(Any, http_client),
+                )
 
     def test_default_headers_option(self) -> None:
-        client = AsyncOpenplugin(base_url=base_url, _strict_response_validation=True, default_headers={"X-Foo": "bar"})
+        client = AsyncOpenplugin(
+            base_url=base_url, x_api_key=x_api_key, _strict_response_validation=True, default_headers={"X-Foo": "bar"}
+        )
         request = client._build_request(FinalRequestOptions(method="get", url="/foo"))
         assert request.headers.get("x-foo") == "bar"
         assert request.headers.get("x-stainless-lang") == "python"
 
         client2 = AsyncOpenplugin(
             base_url=base_url,
+            x_api_key=x_api_key,
             _strict_response_validation=True,
             default_headers={
                 "X-Foo": "stainless",
@@ -992,7 +1007,10 @@ class TestAsyncOpenplugin:
 
     def test_default_query_option(self) -> None:
         client = AsyncOpenplugin(
-            base_url=base_url, _strict_response_validation=True, default_query={"query_param": "bar"}
+            base_url=base_url,
+            x_api_key=x_api_key,
+            _strict_response_validation=True,
+            default_query={"query_param": "bar"},
         )
         request = client._build_request(FinalRequestOptions(method="get", url="/foo"))
         url = httpx.URL(request.url)
@@ -1192,7 +1210,9 @@ class TestAsyncOpenplugin:
         assert response.foo == 2
 
     def test_base_url_setter(self) -> None:
-        client = AsyncOpenplugin(base_url="https://example.com/from_init", _strict_response_validation=True)
+        client = AsyncOpenplugin(
+            base_url="https://example.com/from_init", x_api_key=x_api_key, _strict_response_validation=True
+        )
         assert client.base_url == "https://example.com/from_init/"
 
         client.base_url = "https://example.com/from_setter"  # type: ignore[assignment]
@@ -1201,15 +1221,18 @@ class TestAsyncOpenplugin:
 
     def test_base_url_env(self) -> None:
         with update_env(OPENPLUGIN_BASE_URL="http://localhost:5000/from/env"):
-            client = AsyncOpenplugin(_strict_response_validation=True)
+            client = AsyncOpenplugin(x_api_key=x_api_key, _strict_response_validation=True)
             assert client.base_url == "http://localhost:5000/from/env/"
 
     @pytest.mark.parametrize(
         "client",
         [
-            AsyncOpenplugin(base_url="http://localhost:5000/custom/path/", _strict_response_validation=True),
+            AsyncOpenplugin(
+                base_url="http://localhost:5000/custom/path/", x_api_key=x_api_key, _strict_response_validation=True
+            ),
             AsyncOpenplugin(
                 base_url="http://localhost:5000/custom/path/",
+                x_api_key=x_api_key,
                 _strict_response_validation=True,
                 http_client=httpx.AsyncClient(),
             ),
@@ -1229,9 +1252,12 @@ class TestAsyncOpenplugin:
     @pytest.mark.parametrize(
         "client",
         [
-            AsyncOpenplugin(base_url="http://localhost:5000/custom/path/", _strict_response_validation=True),
+            AsyncOpenplugin(
+                base_url="http://localhost:5000/custom/path/", x_api_key=x_api_key, _strict_response_validation=True
+            ),
             AsyncOpenplugin(
                 base_url="http://localhost:5000/custom/path/",
+                x_api_key=x_api_key,
                 _strict_response_validation=True,
                 http_client=httpx.AsyncClient(),
             ),
@@ -1251,9 +1277,12 @@ class TestAsyncOpenplugin:
     @pytest.mark.parametrize(
         "client",
         [
-            AsyncOpenplugin(base_url="http://localhost:5000/custom/path/", _strict_response_validation=True),
+            AsyncOpenplugin(
+                base_url="http://localhost:5000/custom/path/", x_api_key=x_api_key, _strict_response_validation=True
+            ),
             AsyncOpenplugin(
                 base_url="http://localhost:5000/custom/path/",
+                x_api_key=x_api_key,
                 _strict_response_validation=True,
                 http_client=httpx.AsyncClient(),
             ),
@@ -1271,7 +1300,7 @@ class TestAsyncOpenplugin:
         assert request.url == "https://myapi.com/foo"
 
     async def test_copied_client_does_not_close_http(self) -> None:
-        client = AsyncOpenplugin(base_url=base_url, _strict_response_validation=True)
+        client = AsyncOpenplugin(base_url=base_url, x_api_key=x_api_key, _strict_response_validation=True)
         assert not client.is_closed()
 
         copied = client.copy()
@@ -1283,7 +1312,7 @@ class TestAsyncOpenplugin:
         assert not client.is_closed()
 
     async def test_client_context_manager(self) -> None:
-        client = AsyncOpenplugin(base_url=base_url, _strict_response_validation=True)
+        client = AsyncOpenplugin(base_url=base_url, x_api_key=x_api_key, _strict_response_validation=True)
         async with client as c2:
             assert c2 is client
             assert not c2.is_closed()
@@ -1305,7 +1334,9 @@ class TestAsyncOpenplugin:
 
     async def test_client_max_retries_validation(self) -> None:
         with pytest.raises(TypeError, match=r"max_retries cannot be None"):
-            AsyncOpenplugin(base_url=base_url, _strict_response_validation=True, max_retries=cast(Any, None))
+            AsyncOpenplugin(
+                base_url=base_url, x_api_key=x_api_key, _strict_response_validation=True, max_retries=cast(Any, None)
+            )
 
     @pytest.mark.respx(base_url=base_url)
     @pytest.mark.asyncio
@@ -1315,12 +1346,12 @@ class TestAsyncOpenplugin:
 
         respx_mock.get("/foo").mock(return_value=httpx.Response(200, text="my-custom-format"))
 
-        strict_client = AsyncOpenplugin(base_url=base_url, _strict_response_validation=True)
+        strict_client = AsyncOpenplugin(base_url=base_url, x_api_key=x_api_key, _strict_response_validation=True)
 
         with pytest.raises(APIResponseValidationError):
             await strict_client.get("/foo", cast_to=Model)
 
-        client = AsyncOpenplugin(base_url=base_url, _strict_response_validation=False)
+        client = AsyncOpenplugin(base_url=base_url, x_api_key=x_api_key, _strict_response_validation=False)
 
         response = await client.get("/foo", cast_to=Model)
         assert isinstance(response, str)  # type: ignore[unreachable]
@@ -1348,7 +1379,7 @@ class TestAsyncOpenplugin:
     @mock.patch("time.time", mock.MagicMock(return_value=1696004797))
     @pytest.mark.asyncio
     async def test_parse_retry_after_header(self, remaining_retries: int, retry_after: str, timeout: float) -> None:
-        client = AsyncOpenplugin(base_url=base_url, _strict_response_validation=True)
+        client = AsyncOpenplugin(base_url=base_url, x_api_key=x_api_key, _strict_response_validation=True)
 
         headers = httpx.Headers({"retry-after": retry_after})
         options = FinalRequestOptions(method="get", url="/foo", max_retries=3)
@@ -1358,35 +1389,11 @@ class TestAsyncOpenplugin:
     @mock.patch("openplugin._base_client.BaseClient._calculate_retry_timeout", _low_retry_timeout)
     @pytest.mark.respx(base_url=base_url)
     async def test_retrying_timeout_errors_doesnt_leak(self, respx_mock: MockRouter) -> None:
-        respx_mock.post("/api/plugin-selector").mock(side_effect=httpx.TimeoutException("Test timeout error"))
+        respx_mock.get("/api/info").mock(side_effect=httpx.TimeoutException("Test timeout error"))
 
         with pytest.raises(APITimeoutError):
-            await self.client.post(
-                "/api/plugin-selector",
-                body=cast(
-                    object,
-                    dict(
-                        config={},
-                        messages=[
-                            {
-                                "content": "content",
-                                "message_type": "HumanMessage",
-                            },
-                            {
-                                "content": "content",
-                                "message_type": "HumanMessage",
-                            },
-                            {
-                                "content": "content",
-                                "message_type": "HumanMessage",
-                            },
-                        ],
-                        openplugin_manifest_urls=["string", "string", "string"],
-                        pipeline_name="pipeline_name",
-                    ),
-                ),
-                cast_to=httpx.Response,
-                options={"headers": {RAW_RESPONSE_HEADER: "stream"}},
+            await self.client.get(
+                "/api/info", cast_to=httpx.Response, options={"headers": {RAW_RESPONSE_HEADER: "stream"}}
             )
 
         assert _get_open_connections(self.client) == 0
@@ -1394,35 +1401,11 @@ class TestAsyncOpenplugin:
     @mock.patch("openplugin._base_client.BaseClient._calculate_retry_timeout", _low_retry_timeout)
     @pytest.mark.respx(base_url=base_url)
     async def test_retrying_status_errors_doesnt_leak(self, respx_mock: MockRouter) -> None:
-        respx_mock.post("/api/plugin-selector").mock(return_value=httpx.Response(500))
+        respx_mock.get("/api/info").mock(return_value=httpx.Response(500))
 
         with pytest.raises(APIStatusError):
-            await self.client.post(
-                "/api/plugin-selector",
-                body=cast(
-                    object,
-                    dict(
-                        config={},
-                        messages=[
-                            {
-                                "content": "content",
-                                "message_type": "HumanMessage",
-                            },
-                            {
-                                "content": "content",
-                                "message_type": "HumanMessage",
-                            },
-                            {
-                                "content": "content",
-                                "message_type": "HumanMessage",
-                            },
-                        ],
-                        openplugin_manifest_urls=["string", "string", "string"],
-                        pipeline_name="pipeline_name",
-                    ),
-                ),
-                cast_to=httpx.Response,
-                options={"headers": {RAW_RESPONSE_HEADER: "stream"}},
+            await self.client.get(
+                "/api/info", cast_to=httpx.Response, options={"headers": {RAW_RESPONSE_HEADER: "stream"}}
             )
 
         assert _get_open_connections(self.client) == 0
