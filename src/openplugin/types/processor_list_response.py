@@ -1,6 +1,7 @@
 # File generated from our OpenAPI spec by Stainless. See CONTRIBUTING.md for details.
 
 from typing import List, Optional
+from typing_extensions import TypeAlias
 
 from .._models import BaseModel
 
@@ -48,4 +49,4 @@ class ProcessorListResponseItem(BaseModel):
     processor_type: str
 
 
-ProcessorListResponse = List[ProcessorListResponseItem]
+ProcessorListResponse: TypeAlias = List[ProcessorListResponseItem]

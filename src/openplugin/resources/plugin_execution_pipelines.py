@@ -29,10 +29,21 @@ __all__ = ["PluginExecutionPipelinesResource", "AsyncPluginExecutionPipelinesRes
 class PluginExecutionPipelinesResource(SyncAPIResource):
     @cached_property
     def with_raw_response(self) -> PluginExecutionPipelinesResourceWithRawResponse:
+        """
+        This property can be used as a prefix for any HTTP method call to return the
+        the raw response object instead of the parsed content.
+
+        For more information, see https://www.github.com/ImpromptAI/openplugin-python-sdk#accessing-raw-response-data-eg-headers
+        """
         return PluginExecutionPipelinesResourceWithRawResponse(self)
 
     @cached_property
     def with_streaming_response(self) -> PluginExecutionPipelinesResourceWithStreamingResponse:
+        """
+        An alternative to `.with_raw_response` that doesn't eagerly read the response body.
+
+        For more information, see https://www.github.com/ImpromptAI/openplugin-python-sdk#with_streaming_response
+        """
         return PluginExecutionPipelinesResourceWithStreamingResponse(self)
 
     def create(
@@ -103,10 +114,21 @@ class PluginExecutionPipelinesResource(SyncAPIResource):
 class AsyncPluginExecutionPipelinesResource(AsyncAPIResource):
     @cached_property
     def with_raw_response(self) -> AsyncPluginExecutionPipelinesResourceWithRawResponse:
+        """
+        This property can be used as a prefix for any HTTP method call to return the
+        the raw response object instead of the parsed content.
+
+        For more information, see https://www.github.com/ImpromptAI/openplugin-python-sdk#accessing-raw-response-data-eg-headers
+        """
         return AsyncPluginExecutionPipelinesResourceWithRawResponse(self)
 
     @cached_property
     def with_streaming_response(self) -> AsyncPluginExecutionPipelinesResourceWithStreamingResponse:
+        """
+        An alternative to `.with_raw_response` that doesn't eagerly read the response body.
+
+        For more information, see https://www.github.com/ImpromptAI/openplugin-python-sdk#with_streaming_response
+        """
         return AsyncPluginExecutionPipelinesResourceWithStreamingResponse(self)
 
     async def create(

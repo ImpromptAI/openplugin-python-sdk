@@ -29,10 +29,21 @@ __all__ = ["RunFunctionProvidersResource", "AsyncRunFunctionProvidersResource"]
 class RunFunctionProvidersResource(SyncAPIResource):
     @cached_property
     def with_raw_response(self) -> RunFunctionProvidersResourceWithRawResponse:
+        """
+        This property can be used as a prefix for any HTTP method call to return the
+        the raw response object instead of the parsed content.
+
+        For more information, see https://www.github.com/ImpromptAI/openplugin-python-sdk#accessing-raw-response-data-eg-headers
+        """
         return RunFunctionProvidersResourceWithRawResponse(self)
 
     @cached_property
     def with_streaming_response(self) -> RunFunctionProvidersResourceWithStreamingResponse:
+        """
+        An alternative to `.with_raw_response` that doesn't eagerly read the response body.
+
+        For more information, see https://www.github.com/ImpromptAI/openplugin-python-sdk#with_streaming_response
+        """
         return RunFunctionProvidersResourceWithStreamingResponse(self)
 
     def create(
@@ -86,10 +97,21 @@ class RunFunctionProvidersResource(SyncAPIResource):
 class AsyncRunFunctionProvidersResource(AsyncAPIResource):
     @cached_property
     def with_raw_response(self) -> AsyncRunFunctionProvidersResourceWithRawResponse:
+        """
+        This property can be used as a prefix for any HTTP method call to return the
+        the raw response object instead of the parsed content.
+
+        For more information, see https://www.github.com/ImpromptAI/openplugin-python-sdk#accessing-raw-response-data-eg-headers
+        """
         return AsyncRunFunctionProvidersResourceWithRawResponse(self)
 
     @cached_property
     def with_streaming_response(self) -> AsyncRunFunctionProvidersResourceWithStreamingResponse:
+        """
+        An alternative to `.with_raw_response` that doesn't eagerly read the response body.
+
+        For more information, see https://www.github.com/ImpromptAI/openplugin-python-sdk#with_streaming_response
+        """
         return AsyncRunFunctionProvidersResourceWithStreamingResponse(self)
 
     async def create(

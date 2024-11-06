@@ -27,10 +27,21 @@ __all__ = ["PluginValidatorsResource", "AsyncPluginValidatorsResource"]
 class PluginValidatorsResource(SyncAPIResource):
     @cached_property
     def with_raw_response(self) -> PluginValidatorsResourceWithRawResponse:
+        """
+        This property can be used as a prefix for any HTTP method call to return the
+        the raw response object instead of the parsed content.
+
+        For more information, see https://www.github.com/ImpromptAI/openplugin-python-sdk#accessing-raw-response-data-eg-headers
+        """
         return PluginValidatorsResourceWithRawResponse(self)
 
     @cached_property
     def with_streaming_response(self) -> PluginValidatorsResourceWithStreamingResponse:
+        """
+        An alternative to `.with_raw_response` that doesn't eagerly read the response body.
+
+        For more information, see https://www.github.com/ImpromptAI/openplugin-python-sdk#with_streaming_response
+        """
         return PluginValidatorsResourceWithStreamingResponse(self)
 
     def create(
@@ -69,10 +80,21 @@ class PluginValidatorsResource(SyncAPIResource):
 class AsyncPluginValidatorsResource(AsyncAPIResource):
     @cached_property
     def with_raw_response(self) -> AsyncPluginValidatorsResourceWithRawResponse:
+        """
+        This property can be used as a prefix for any HTTP method call to return the
+        the raw response object instead of the parsed content.
+
+        For more information, see https://www.github.com/ImpromptAI/openplugin-python-sdk#accessing-raw-response-data-eg-headers
+        """
         return AsyncPluginValidatorsResourceWithRawResponse(self)
 
     @cached_property
     def with_streaming_response(self) -> AsyncPluginValidatorsResourceWithStreamingResponse:
+        """
+        An alternative to `.with_raw_response` that doesn't eagerly read the response body.
+
+        For more information, see https://www.github.com/ImpromptAI/openplugin-python-sdk#with_streaming_response
+        """
         return AsyncPluginValidatorsResourceWithStreamingResponse(self)
 
     async def create(

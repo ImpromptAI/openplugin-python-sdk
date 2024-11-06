@@ -2,7 +2,7 @@
 
 [![PyPI version](https://img.shields.io/pypi/v/openplugin-sdk.svg)](https://pypi.org/project/openplugin-sdk/)
 
-The Openplugin Python library provides convenient access to the Openplugin REST API from any Python 3.7+
+The Openplugin Python library provides convenient access to the Openplugin REST API from any Python 3.8+
 application. The library includes type definitions for all request params and response fields,
 and offers both synchronous and asynchronous clients powered by [httpx](https://github.com/encode/httpx).
 
@@ -28,8 +28,8 @@ from openplugin import Openplugin
 
 client = Openplugin()
 
-info_retrieve_response = client.info.retrieve()
-print(info_retrieve_response.end_time)
+info = client.info.retrieve()
+print(info.end_time)
 ```
 
 While you can provide a `x_api_key` keyword argument,
@@ -49,8 +49,8 @@ client = AsyncOpenplugin()
 
 
 async def main() -> None:
-    info_retrieve_response = await client.info.retrieve()
-    print(info_retrieve_response.end_time)
+    info = await client.info.retrieve()
+    print(info.end_time)
 
 
 asyncio.run(main())
@@ -271,6 +271,12 @@ client = Openplugin(
 )
 ```
 
+You can also customize the client on a per-request basis by using `with_options()`:
+
+```python
+client.with_options(http_client=DefaultHttpxClient(...))
+```
+
 ### Managing HTTP resources
 
 By default the library closes underlying HTTP connections whenever the client is [garbage collected](https://docs.python.org/3/reference/datamodel.html#object.__del__). You can manually close the client using the `.close()` method if desired, or with a context manager that closes when exiting.
@@ -287,6 +293,21 @@ We take backwards-compatibility seriously and work hard to ensure you can rely o
 
 We are keen for your feedback; please open an [issue](https://www.github.com/ImpromptAI/openplugin-python-sdk/issues) with questions, bugs, or suggestions.
 
+### Determining the installed version
+
+If you've upgraded to the latest version but aren't seeing any new features you were expecting then your python environment is likely still using an older version.
+
+You can determine the version that is being used at runtime with:
+
+```py
+import openplugin
+print(openplugin.__version__)
+```
+
 ## Requirements
 
-Python 3.7 or higher.
+Python 3.8 or higher.
+
+## Contributing
+
+See [the contributing documentation](./CONTRIBUTING.md).
