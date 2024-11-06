@@ -22,10 +22,21 @@ __all__ = ["ProcessorsResource", "AsyncProcessorsResource"]
 class ProcessorsResource(SyncAPIResource):
     @cached_property
     def with_raw_response(self) -> ProcessorsResourceWithRawResponse:
+        """
+        This property can be used as a prefix for any HTTP method call to return the
+        the raw response object instead of the parsed content.
+
+        For more information, see https://www.github.com/ImpromptAI/openplugin-python-sdk#accessing-raw-response-data-eg-headers
+        """
         return ProcessorsResourceWithRawResponse(self)
 
     @cached_property
     def with_streaming_response(self) -> ProcessorsResourceWithStreamingResponse:
+        """
+        An alternative to `.with_raw_response` that doesn't eagerly read the response body.
+
+        For more information, see https://www.github.com/ImpromptAI/openplugin-python-sdk#with_streaming_response
+        """
         return ProcessorsResourceWithStreamingResponse(self)
 
     def list(
@@ -51,10 +62,21 @@ class ProcessorsResource(SyncAPIResource):
 class AsyncProcessorsResource(AsyncAPIResource):
     @cached_property
     def with_raw_response(self) -> AsyncProcessorsResourceWithRawResponse:
+        """
+        This property can be used as a prefix for any HTTP method call to return the
+        the raw response object instead of the parsed content.
+
+        For more information, see https://www.github.com/ImpromptAI/openplugin-python-sdk#accessing-raw-response-data-eg-headers
+        """
         return AsyncProcessorsResourceWithRawResponse(self)
 
     @cached_property
     def with_streaming_response(self) -> AsyncProcessorsResourceWithStreamingResponse:
+        """
+        An alternative to `.with_raw_response` that doesn't eagerly read the response body.
+
+        For more information, see https://www.github.com/ImpromptAI/openplugin-python-sdk#with_streaming_response
+        """
         return AsyncProcessorsResourceWithStreamingResponse(self)
 
     async def list(
