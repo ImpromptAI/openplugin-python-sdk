@@ -20,7 +20,7 @@ class TestPluginExecutionPipelines:
     @parametrize
     def test_method_create(self, client: Openplugin) -> None:
         plugin_execution_pipeline = client.plugin_execution_pipelines.create(
-            conversation=[{}, {}, {}],
+            conversation=[{}],
             header={},
             prompt="prompt",
         )
@@ -29,7 +29,7 @@ class TestPluginExecutionPipelines:
     @parametrize
     def test_method_create_with_all_params(self, client: Openplugin) -> None:
         plugin_execution_pipeline = client.plugin_execution_pipelines.create(
-            conversation=[{}, {}, {}],
+            conversation=[{}],
             header={},
             prompt="prompt",
             auth_query_param={},
@@ -53,7 +53,7 @@ class TestPluginExecutionPipelines:
             function_provider_input={"name": "name"},
             openplugin_manifest_obj={},
             openplugin_manifest_url="openplugin_manifest_url",
-            output_module_names=["string", "string", "string"],
+            output_module_names=["string"],
             run_all_output_modules=True,
             selected_operation="selected_operation",
             session_variables="session_variables",
@@ -63,7 +63,7 @@ class TestPluginExecutionPipelines:
     @parametrize
     def test_raw_response_create(self, client: Openplugin) -> None:
         response = client.plugin_execution_pipelines.with_raw_response.create(
-            conversation=[{}, {}, {}],
+            conversation=[{}],
             header={},
             prompt="prompt",
         )
@@ -76,7 +76,7 @@ class TestPluginExecutionPipelines:
     @parametrize
     def test_streaming_response_create(self, client: Openplugin) -> None:
         with client.plugin_execution_pipelines.with_streaming_response.create(
-            conversation=[{}, {}, {}],
+            conversation=[{}],
             header={},
             prompt="prompt",
         ) as response:
@@ -95,7 +95,7 @@ class TestAsyncPluginExecutionPipelines:
     @parametrize
     async def test_method_create(self, async_client: AsyncOpenplugin) -> None:
         plugin_execution_pipeline = await async_client.plugin_execution_pipelines.create(
-            conversation=[{}, {}, {}],
+            conversation=[{}],
             header={},
             prompt="prompt",
         )
@@ -104,7 +104,7 @@ class TestAsyncPluginExecutionPipelines:
     @parametrize
     async def test_method_create_with_all_params(self, async_client: AsyncOpenplugin) -> None:
         plugin_execution_pipeline = await async_client.plugin_execution_pipelines.create(
-            conversation=[{}, {}, {}],
+            conversation=[{}],
             header={},
             prompt="prompt",
             auth_query_param={},
@@ -128,7 +128,7 @@ class TestAsyncPluginExecutionPipelines:
             function_provider_input={"name": "name"},
             openplugin_manifest_obj={},
             openplugin_manifest_url="openplugin_manifest_url",
-            output_module_names=["string", "string", "string"],
+            output_module_names=["string"],
             run_all_output_modules=True,
             selected_operation="selected_operation",
             session_variables="session_variables",
@@ -138,7 +138,7 @@ class TestAsyncPluginExecutionPipelines:
     @parametrize
     async def test_raw_response_create(self, async_client: AsyncOpenplugin) -> None:
         response = await async_client.plugin_execution_pipelines.with_raw_response.create(
-            conversation=[{}, {}, {}],
+            conversation=[{}],
             header={},
             prompt="prompt",
         )
@@ -151,7 +151,7 @@ class TestAsyncPluginExecutionPipelines:
     @parametrize
     async def test_streaming_response_create(self, async_client: AsyncOpenplugin) -> None:
         async with async_client.plugin_execution_pipelines.with_streaming_response.create(
-            conversation=[{}, {}, {}],
+            conversation=[{}],
             header={},
             prompt="prompt",
         ) as response:
