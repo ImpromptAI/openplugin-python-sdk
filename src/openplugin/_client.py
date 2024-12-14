@@ -8,7 +8,7 @@ from typing_extensions import Self, override
 
 import httpx
 
-from . import resources, _exceptions
+from . import _exceptions
 from ._qs import Querystring
 from ._types import (
     NOT_GIVEN,
@@ -24,6 +24,16 @@ from ._utils import (
     get_async_library,
 )
 from ._version import __version__
+from .resources import (
+    info,
+    processors,
+    plugin_validators,
+    function_providers,
+    openapi_param_parsers,
+    run_function_providers,
+    function_provider_requests,
+    plugin_execution_pipelines,
+)
 from ._streaming import Stream as Stream, AsyncStream as AsyncStream
 from ._exceptions import APIStatusError, OpenpluginError
 from ._base_client import (
@@ -37,7 +47,6 @@ __all__ = [
     "Transport",
     "ProxiesTypes",
     "RequestOptions",
-    "resources",
     "Openplugin",
     "AsyncOpenplugin",
     "Client",
@@ -46,14 +55,14 @@ __all__ = [
 
 
 class Openplugin(SyncAPIClient):
-    info: resources.InfoResource
-    plugin_execution_pipelines: resources.PluginExecutionPipelinesResource
-    processors: resources.ProcessorsResource
-    function_providers: resources.FunctionProvidersResource
-    function_provider_requests: resources.FunctionProviderRequestsResource
-    run_function_providers: resources.RunFunctionProvidersResource
-    plugin_validators: resources.PluginValidatorsResource
-    openapi_param_parsers: resources.OpenAPIParamParsersResource
+    info: info.InfoResource
+    plugin_execution_pipelines: plugin_execution_pipelines.PluginExecutionPipelinesResource
+    processors: processors.ProcessorsResource
+    function_providers: function_providers.FunctionProvidersResource
+    function_provider_requests: function_provider_requests.FunctionProviderRequestsResource
+    run_function_providers: run_function_providers.RunFunctionProvidersResource
+    plugin_validators: plugin_validators.PluginValidatorsResource
+    openapi_param_parsers: openapi_param_parsers.OpenAPIParamParsersResource
     with_raw_response: OpenpluginWithRawResponse
     with_streaming_response: OpenpluginWithStreamedResponse
 
@@ -111,14 +120,14 @@ class Openplugin(SyncAPIClient):
             _strict_response_validation=_strict_response_validation,
         )
 
-        self.info = resources.InfoResource(self)
-        self.plugin_execution_pipelines = resources.PluginExecutionPipelinesResource(self)
-        self.processors = resources.ProcessorsResource(self)
-        self.function_providers = resources.FunctionProvidersResource(self)
-        self.function_provider_requests = resources.FunctionProviderRequestsResource(self)
-        self.run_function_providers = resources.RunFunctionProvidersResource(self)
-        self.plugin_validators = resources.PluginValidatorsResource(self)
-        self.openapi_param_parsers = resources.OpenAPIParamParsersResource(self)
+        self.info = info.InfoResource(self)
+        self.plugin_execution_pipelines = plugin_execution_pipelines.PluginExecutionPipelinesResource(self)
+        self.processors = processors.ProcessorsResource(self)
+        self.function_providers = function_providers.FunctionProvidersResource(self)
+        self.function_provider_requests = function_provider_requests.FunctionProviderRequestsResource(self)
+        self.run_function_providers = run_function_providers.RunFunctionProvidersResource(self)
+        self.plugin_validators = plugin_validators.PluginValidatorsResource(self)
+        self.openapi_param_parsers = openapi_param_parsers.OpenAPIParamParsersResource(self)
         self.with_raw_response = OpenpluginWithRawResponse(self)
         self.with_streaming_response = OpenpluginWithStreamedResponse(self)
 
@@ -228,14 +237,14 @@ class Openplugin(SyncAPIClient):
 
 
 class AsyncOpenplugin(AsyncAPIClient):
-    info: resources.AsyncInfoResource
-    plugin_execution_pipelines: resources.AsyncPluginExecutionPipelinesResource
-    processors: resources.AsyncProcessorsResource
-    function_providers: resources.AsyncFunctionProvidersResource
-    function_provider_requests: resources.AsyncFunctionProviderRequestsResource
-    run_function_providers: resources.AsyncRunFunctionProvidersResource
-    plugin_validators: resources.AsyncPluginValidatorsResource
-    openapi_param_parsers: resources.AsyncOpenAPIParamParsersResource
+    info: info.AsyncInfoResource
+    plugin_execution_pipelines: plugin_execution_pipelines.AsyncPluginExecutionPipelinesResource
+    processors: processors.AsyncProcessorsResource
+    function_providers: function_providers.AsyncFunctionProvidersResource
+    function_provider_requests: function_provider_requests.AsyncFunctionProviderRequestsResource
+    run_function_providers: run_function_providers.AsyncRunFunctionProvidersResource
+    plugin_validators: plugin_validators.AsyncPluginValidatorsResource
+    openapi_param_parsers: openapi_param_parsers.AsyncOpenAPIParamParsersResource
     with_raw_response: AsyncOpenpluginWithRawResponse
     with_streaming_response: AsyncOpenpluginWithStreamedResponse
 
@@ -293,14 +302,14 @@ class AsyncOpenplugin(AsyncAPIClient):
             _strict_response_validation=_strict_response_validation,
         )
 
-        self.info = resources.AsyncInfoResource(self)
-        self.plugin_execution_pipelines = resources.AsyncPluginExecutionPipelinesResource(self)
-        self.processors = resources.AsyncProcessorsResource(self)
-        self.function_providers = resources.AsyncFunctionProvidersResource(self)
-        self.function_provider_requests = resources.AsyncFunctionProviderRequestsResource(self)
-        self.run_function_providers = resources.AsyncRunFunctionProvidersResource(self)
-        self.plugin_validators = resources.AsyncPluginValidatorsResource(self)
-        self.openapi_param_parsers = resources.AsyncOpenAPIParamParsersResource(self)
+        self.info = info.AsyncInfoResource(self)
+        self.plugin_execution_pipelines = plugin_execution_pipelines.AsyncPluginExecutionPipelinesResource(self)
+        self.processors = processors.AsyncProcessorsResource(self)
+        self.function_providers = function_providers.AsyncFunctionProvidersResource(self)
+        self.function_provider_requests = function_provider_requests.AsyncFunctionProviderRequestsResource(self)
+        self.run_function_providers = run_function_providers.AsyncRunFunctionProvidersResource(self)
+        self.plugin_validators = plugin_validators.AsyncPluginValidatorsResource(self)
+        self.openapi_param_parsers = openapi_param_parsers.AsyncOpenAPIParamParsersResource(self)
         self.with_raw_response = AsyncOpenpluginWithRawResponse(self)
         self.with_streaming_response = AsyncOpenpluginWithStreamedResponse(self)
 
@@ -411,80 +420,104 @@ class AsyncOpenplugin(AsyncAPIClient):
 
 class OpenpluginWithRawResponse:
     def __init__(self, client: Openplugin) -> None:
-        self.info = resources.InfoResourceWithRawResponse(client.info)
-        self.plugin_execution_pipelines = resources.PluginExecutionPipelinesResourceWithRawResponse(
+        self.info = info.InfoResourceWithRawResponse(client.info)
+        self.plugin_execution_pipelines = plugin_execution_pipelines.PluginExecutionPipelinesResourceWithRawResponse(
             client.plugin_execution_pipelines
         )
-        self.processors = resources.ProcessorsResourceWithRawResponse(client.processors)
-        self.function_providers = resources.FunctionProvidersResourceWithRawResponse(client.function_providers)
-        self.function_provider_requests = resources.FunctionProviderRequestsResourceWithRawResponse(
+        self.processors = processors.ProcessorsResourceWithRawResponse(client.processors)
+        self.function_providers = function_providers.FunctionProvidersResourceWithRawResponse(client.function_providers)
+        self.function_provider_requests = function_provider_requests.FunctionProviderRequestsResourceWithRawResponse(
             client.function_provider_requests
         )
-        self.run_function_providers = resources.RunFunctionProvidersResourceWithRawResponse(
+        self.run_function_providers = run_function_providers.RunFunctionProvidersResourceWithRawResponse(
             client.run_function_providers
         )
-        self.plugin_validators = resources.PluginValidatorsResourceWithRawResponse(client.plugin_validators)
-        self.openapi_param_parsers = resources.OpenAPIParamParsersResourceWithRawResponse(client.openapi_param_parsers)
+        self.plugin_validators = plugin_validators.PluginValidatorsResourceWithRawResponse(client.plugin_validators)
+        self.openapi_param_parsers = openapi_param_parsers.OpenAPIParamParsersResourceWithRawResponse(
+            client.openapi_param_parsers
+        )
 
 
 class AsyncOpenpluginWithRawResponse:
     def __init__(self, client: AsyncOpenplugin) -> None:
-        self.info = resources.AsyncInfoResourceWithRawResponse(client.info)
-        self.plugin_execution_pipelines = resources.AsyncPluginExecutionPipelinesResourceWithRawResponse(
-            client.plugin_execution_pipelines
+        self.info = info.AsyncInfoResourceWithRawResponse(client.info)
+        self.plugin_execution_pipelines = (
+            plugin_execution_pipelines.AsyncPluginExecutionPipelinesResourceWithRawResponse(
+                client.plugin_execution_pipelines
+            )
         )
-        self.processors = resources.AsyncProcessorsResourceWithRawResponse(client.processors)
-        self.function_providers = resources.AsyncFunctionProvidersResourceWithRawResponse(client.function_providers)
-        self.function_provider_requests = resources.AsyncFunctionProviderRequestsResourceWithRawResponse(
-            client.function_provider_requests
+        self.processors = processors.AsyncProcessorsResourceWithRawResponse(client.processors)
+        self.function_providers = function_providers.AsyncFunctionProvidersResourceWithRawResponse(
+            client.function_providers
         )
-        self.run_function_providers = resources.AsyncRunFunctionProvidersResourceWithRawResponse(
+        self.function_provider_requests = (
+            function_provider_requests.AsyncFunctionProviderRequestsResourceWithRawResponse(
+                client.function_provider_requests
+            )
+        )
+        self.run_function_providers = run_function_providers.AsyncRunFunctionProvidersResourceWithRawResponse(
             client.run_function_providers
         )
-        self.plugin_validators = resources.AsyncPluginValidatorsResourceWithRawResponse(client.plugin_validators)
-        self.openapi_param_parsers = resources.AsyncOpenAPIParamParsersResourceWithRawResponse(
+        self.plugin_validators = plugin_validators.AsyncPluginValidatorsResourceWithRawResponse(
+            client.plugin_validators
+        )
+        self.openapi_param_parsers = openapi_param_parsers.AsyncOpenAPIParamParsersResourceWithRawResponse(
             client.openapi_param_parsers
         )
 
 
 class OpenpluginWithStreamedResponse:
     def __init__(self, client: Openplugin) -> None:
-        self.info = resources.InfoResourceWithStreamingResponse(client.info)
-        self.plugin_execution_pipelines = resources.PluginExecutionPipelinesResourceWithStreamingResponse(
-            client.plugin_execution_pipelines
+        self.info = info.InfoResourceWithStreamingResponse(client.info)
+        self.plugin_execution_pipelines = (
+            plugin_execution_pipelines.PluginExecutionPipelinesResourceWithStreamingResponse(
+                client.plugin_execution_pipelines
+            )
         )
-        self.processors = resources.ProcessorsResourceWithStreamingResponse(client.processors)
-        self.function_providers = resources.FunctionProvidersResourceWithStreamingResponse(client.function_providers)
-        self.function_provider_requests = resources.FunctionProviderRequestsResourceWithStreamingResponse(
-            client.function_provider_requests
+        self.processors = processors.ProcessorsResourceWithStreamingResponse(client.processors)
+        self.function_providers = function_providers.FunctionProvidersResourceWithStreamingResponse(
+            client.function_providers
         )
-        self.run_function_providers = resources.RunFunctionProvidersResourceWithStreamingResponse(
+        self.function_provider_requests = (
+            function_provider_requests.FunctionProviderRequestsResourceWithStreamingResponse(
+                client.function_provider_requests
+            )
+        )
+        self.run_function_providers = run_function_providers.RunFunctionProvidersResourceWithStreamingResponse(
             client.run_function_providers
         )
-        self.plugin_validators = resources.PluginValidatorsResourceWithStreamingResponse(client.plugin_validators)
-        self.openapi_param_parsers = resources.OpenAPIParamParsersResourceWithStreamingResponse(
+        self.plugin_validators = plugin_validators.PluginValidatorsResourceWithStreamingResponse(
+            client.plugin_validators
+        )
+        self.openapi_param_parsers = openapi_param_parsers.OpenAPIParamParsersResourceWithStreamingResponse(
             client.openapi_param_parsers
         )
 
 
 class AsyncOpenpluginWithStreamedResponse:
     def __init__(self, client: AsyncOpenplugin) -> None:
-        self.info = resources.AsyncInfoResourceWithStreamingResponse(client.info)
-        self.plugin_execution_pipelines = resources.AsyncPluginExecutionPipelinesResourceWithStreamingResponse(
-            client.plugin_execution_pipelines
+        self.info = info.AsyncInfoResourceWithStreamingResponse(client.info)
+        self.plugin_execution_pipelines = (
+            plugin_execution_pipelines.AsyncPluginExecutionPipelinesResourceWithStreamingResponse(
+                client.plugin_execution_pipelines
+            )
         )
-        self.processors = resources.AsyncProcessorsResourceWithStreamingResponse(client.processors)
-        self.function_providers = resources.AsyncFunctionProvidersResourceWithStreamingResponse(
+        self.processors = processors.AsyncProcessorsResourceWithStreamingResponse(client.processors)
+        self.function_providers = function_providers.AsyncFunctionProvidersResourceWithStreamingResponse(
             client.function_providers
         )
-        self.function_provider_requests = resources.AsyncFunctionProviderRequestsResourceWithStreamingResponse(
-            client.function_provider_requests
+        self.function_provider_requests = (
+            function_provider_requests.AsyncFunctionProviderRequestsResourceWithStreamingResponse(
+                client.function_provider_requests
+            )
         )
-        self.run_function_providers = resources.AsyncRunFunctionProvidersResourceWithStreamingResponse(
+        self.run_function_providers = run_function_providers.AsyncRunFunctionProvidersResourceWithStreamingResponse(
             client.run_function_providers
         )
-        self.plugin_validators = resources.AsyncPluginValidatorsResourceWithStreamingResponse(client.plugin_validators)
-        self.openapi_param_parsers = resources.AsyncOpenAPIParamParsersResourceWithStreamingResponse(
+        self.plugin_validators = plugin_validators.AsyncPluginValidatorsResourceWithStreamingResponse(
+            client.plugin_validators
+        )
+        self.openapi_param_parsers = openapi_param_parsers.AsyncOpenAPIParamParsersResourceWithStreamingResponse(
             client.openapi_param_parsers
         )
 

@@ -27,10 +27,21 @@ __all__ = ["FunctionProviderRequestsResource", "AsyncFunctionProviderRequestsRes
 class FunctionProviderRequestsResource(SyncAPIResource):
     @cached_property
     def with_raw_response(self) -> FunctionProviderRequestsResourceWithRawResponse:
+        """
+        This property can be used as a prefix for any HTTP method call to return the
+        the raw response object instead of the parsed content.
+
+        For more information, see https://www.github.com/ImpromptAI/openplugin-python-sdk#accessing-raw-response-data-eg-headers
+        """
         return FunctionProviderRequestsResourceWithRawResponse(self)
 
     @cached_property
     def with_streaming_response(self) -> FunctionProviderRequestsResourceWithStreamingResponse:
+        """
+        An alternative to `.with_raw_response` that doesn't eagerly read the response body.
+
+        For more information, see https://www.github.com/ImpromptAI/openplugin-python-sdk#with_streaming_response
+        """
         return FunctionProviderRequestsResourceWithStreamingResponse(self)
 
     def retrieve(
@@ -79,10 +90,21 @@ class FunctionProviderRequestsResource(SyncAPIResource):
 class AsyncFunctionProviderRequestsResource(AsyncAPIResource):
     @cached_property
     def with_raw_response(self) -> AsyncFunctionProviderRequestsResourceWithRawResponse:
+        """
+        This property can be used as a prefix for any HTTP method call to return the
+        the raw response object instead of the parsed content.
+
+        For more information, see https://www.github.com/ImpromptAI/openplugin-python-sdk#accessing-raw-response-data-eg-headers
+        """
         return AsyncFunctionProviderRequestsResourceWithRawResponse(self)
 
     @cached_property
     def with_streaming_response(self) -> AsyncFunctionProviderRequestsResourceWithStreamingResponse:
+        """
+        An alternative to `.with_raw_response` that doesn't eagerly read the response body.
+
+        For more information, see https://www.github.com/ImpromptAI/openplugin-python-sdk#with_streaming_response
+        """
         return AsyncFunctionProviderRequestsResourceWithStreamingResponse(self)
 
     async def retrieve(

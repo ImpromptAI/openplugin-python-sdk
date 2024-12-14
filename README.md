@@ -2,7 +2,7 @@
 
 [![PyPI version](https://img.shields.io/pypi/v/openplugin-sdk.svg)](https://pypi.org/project/openplugin-sdk/)
 
-The Openplugin Python library provides convenient access to the Openplugin REST API from any Python 3.7+
+The Openplugin Python library provides convenient access to the Openplugin REST API from any Python 3.8+
 application. The library includes type definitions for all request params and response fields,
 and offers both synchronous and asynchronous clients powered by [httpx](https://github.com/encode/httpx).
 
@@ -16,7 +16,7 @@ The REST API documentation can be found on [openplugin.com](https://openplugin.c
 
 ```sh
 # install from PyPI
-pip install --pre openplugin-sdk
+pip install openplugin-sdk
 ```
 
 ## Usage
@@ -28,8 +28,8 @@ from openplugin import Openplugin
 
 client = Openplugin()
 
-info_retrieve_response = client.info.retrieve()
-print(info_retrieve_response.end_time)
+info = client.info.retrieve()
+print(info.end_time)
 ```
 
 While you can provide a `x_api_key` keyword argument,
@@ -49,8 +49,8 @@ client = AsyncOpenplugin()
 
 
 async def main() -> None:
-    info_retrieve_response = await client.info.retrieve()
-    print(info_retrieve_response.end_time)
+    info = await client.info.retrieve()
+    print(info.end_time)
 
 
 asyncio.run(main())
@@ -162,11 +162,13 @@ Note that requests that time out are [retried twice by default](#retries).
 
 We use the standard library [`logging`](https://docs.python.org/3/library/logging.html) module.
 
-You can enable logging by setting the environment variable `OPENPLUGIN_LOG` to `debug`.
+You can enable logging by setting the environment variable `OPENPLUGIN_LOG` to `info`.
 
 ```shell
-$ export OPENPLUGIN_LOG=debug
+$ export OPENPLUGIN_LOG=info
 ```
+
+Or to `debug` for more verbose logging.
 
 ### How to tell whether `None` means `null` or missing
 
@@ -254,21 +256,28 @@ can also get all the extra fields on the Pydantic model as a dict with
 
 You can directly override the [httpx client](https://www.python-httpx.org/api/#client) to customize it for your use case, including:
 
-- Support for proxies
-- Custom transports
+- Support for [proxies](https://www.python-httpx.org/advanced/proxies/)
+- Custom [transports](https://www.python-httpx.org/advanced/transports/)
 - Additional [advanced](https://www.python-httpx.org/advanced/clients/) functionality
 
 ```python
+import httpx
 from openplugin import Openplugin, DefaultHttpxClient
 
 client = Openplugin(
     # Or use the `OPENPLUGIN_BASE_URL` env var
     base_url="http://my.test.server.example.com:8083",
     http_client=DefaultHttpxClient(
-        proxies="http://my.test.proxy.example.com",
+        proxy="http://my.test.proxy.example.com",
         transport=httpx.HTTPTransport(local_address="0.0.0.0"),
     ),
 )
+```
+
+You can also customize the client on a per-request basis by using `with_options()`:
+
+```python
+client.with_options(http_client=DefaultHttpxClient(...))
 ```
 
 ### Managing HTTP resources
@@ -287,6 +296,21 @@ We take backwards-compatibility seriously and work hard to ensure you can rely o
 
 We are keen for your feedback; please open an [issue](https://www.github.com/ImpromptAI/openplugin-python-sdk/issues) with questions, bugs, or suggestions.
 
+### Determining the installed version
+
+If you've upgraded to the latest version but aren't seeing any new features you were expecting then your python environment is likely still using an older version.
+
+You can determine the version that is being used at runtime with:
+
+```py
+import openplugin
+print(openplugin.__version__)
+```
+
 ## Requirements
 
-Python 3.7 or higher.
+Python 3.8 or higher.
+
+## Contributing
+
+See [the contributing documentation](./CONTRIBUTING.md).
