@@ -16,7 +16,7 @@ The REST API documentation can be found on [openplugin.com](https://openplugin.c
 
 ```sh
 # install from PyPI
-pip install --pre openplugin-sdk
+pip install openplugin-sdk
 ```
 
 ## Usage
